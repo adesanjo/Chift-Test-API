@@ -9,6 +9,8 @@ import schedule
 import secret
 from constants import DATABASE
 
+FORMAT = "%(asctime)s %(message)s"
+logging.basicConfig(format=FORMAT)
 log = logging.getLogger("odoo-logger")
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler(sys.stdout))
