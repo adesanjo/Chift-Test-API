@@ -10,7 +10,17 @@ Python 3.10+
 
 ### How to run
 
+Install necessary dependencies
 ```
 pip install -r requirements.txt
+```
+
+Run the odoo script in a shell
+```
+python3 odoo.py
+```
+
+Run the API in a separate shell
+```
 python3 main.py
 ```
