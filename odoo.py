@@ -2,14 +2,19 @@ from time import sleep
 import xmlrpc.client
 import sqlite3
 import logging
+import sys
 
 import schedule
 
 import secret
 from constants import DATABASE
 
+log = logging.getLogger("odoo-logger")
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler(sys.stdout))
+
 def updateDatabase() -> None:
-    logging.info("Updating database...")
+    log.info("Updating database...")
     contacts, invoices = getDataFromOdoo()
     updateDatabaseWithData(contacts, invoices)
 
@@ -75,7 +80,7 @@ def updateDatabaseWithData(contacts: list[dict], invoices: list[dict]) -> None:
 
 if __name__ == "__main__":
     updateDatabase()  # Run once before starting the scheduler
-    logging.info("Starting scheduler...")
+    log.info("Starting scheduler...")
     schedule.every(5).minutes.do(updateDatabase)
 
     while True:
