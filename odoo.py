@@ -73,6 +73,7 @@ def updateDatabaseWithData(contacts: list[dict], invoices: list[dict]) -> None:
     con.close()
 
 if __name__ == "__main__":
+    updateDatabase()  # Run once before starting the scheduler
     print("Starting scheduler...")
     schedule.every(5).minutes.do(updateDatabase)
 
