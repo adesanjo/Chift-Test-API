@@ -2,7 +2,6 @@ from time import sleep
 import xmlrpc.client
 import sqlite3
 import logging
-import sys
 
 import schedule
 
