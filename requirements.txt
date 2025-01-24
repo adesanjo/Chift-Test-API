@@ -1,0 +1,3 @@
+schedule
+fastapi
+uvicorn[standard]

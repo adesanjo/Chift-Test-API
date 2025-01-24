@@ -1,0 +1,1 @@
+DATABASE = "odoo.db"
