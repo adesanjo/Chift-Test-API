@@ -19,6 +19,7 @@ class Invoice(BaseModel):
     invoice_date: str
     amount_total: float
     state: str
+    status_in_payment: str
     partner_id: int
 
 class Error(BaseModel):
@@ -53,7 +54,7 @@ async def invoices() -> list[Invoice]:
     cur.execute("SELECT * FROM invoices")
     dbInvoices = cur.fetchall()
     con.close()
-    response = [Invoice(**dict(zip(("id", "name", "invoice_date", "amount_total", "state", "partner_id"), invoice))) for invoice in dbInvoices]
+    response = [Invoice(**dict(zip(("id", "name", "invoice_date", "amount_total", "state", "status_in_payment", "partner_id"), invoice))) for invoice in dbInvoices]
     return response
 
 @app.get("/invoices/{invoice_id}")
@@ -65,5 +66,5 @@ async def invoice(invoice_id: int) -> Invoice | Error:
     con.close()
     if dbInvoice is None:
         return Error(error="Invoice not found")
-    response = Invoice(**dict(zip(("id", "name", "invoice_date", "amount_total", "state", "partner_id"), dbInvoice)))
+    response = Invoice(**dict(zip(("id", "name", "invoice_date", "amount_total", "state", "status_in_payment", "partner_id"), dbInvoice)))
     return response

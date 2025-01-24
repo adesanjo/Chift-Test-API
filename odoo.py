@@ -28,7 +28,7 @@ def getDataFromOdoo() -> tuple[list[dict], list[dict]]:
     uid: int = common.authenticate(db, username, password, {})  # type: ignore
     
     contacts = fetchData(url, db, uid, password, "res.partner", ["id", "name", "email", "phone"])
-    invoices = fetchData(url, db, uid, password, "account.move", ["id", "name", "invoice_date", "amount_total", "state", "partner_id.0"])
+    invoices = fetchData(url, db, uid, password, "account.move", ["id", "name", "invoice_date", "amount_total", "state", "status_in_payment", "partner_id.0"])
     
     return contacts, invoices
     
@@ -59,7 +59,7 @@ def updateDatabaseWithData(contacts: list[dict], invoices: list[dict]) -> None:
     cur = con.cursor()
     
     cur.execute("CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT)")
-    cur.execute("CREATE TABLE IF NOT EXISTS invoices (id INTEGER PRIMARY KEY, name TEXT, invoice_date TEXT, amount_total REAL, state TEXT, partner_id INTEGER)")
+    cur.execute("CREATE TABLE IF NOT EXISTS invoices (id INTEGER PRIMARY KEY, name TEXT, invoice_date TEXT, amount_total REAL, state TEXT, status_in_payment TEXT, partner_id INTEGER)")
     
     for contact in contacts:
         cur.execute("SELECT * FROM contacts WHERE id = ?", (contact["id"],))
@@ -71,9 +71,9 @@ def updateDatabaseWithData(contacts: list[dict], invoices: list[dict]) -> None:
     for invoice in invoices:
         cur.execute("SELECT * FROM invoices WHERE id = ?", (invoice["id"],))
         if cur.fetchone() is None:
-            cur.execute("INSERT INTO invoices VALUES (?, ?, ?, ?, ?, ?)", (invoice["id"], invoice["name"], invoice["invoice_date"], invoice["amount_total"], invoice["state"], invoice["partner_id"]))
+            cur.execute("INSERT INTO invoices VALUES (?, ?, ?, ?, ?, ?, ?)", (invoice["id"], invoice["name"], invoice["invoice_date"], invoice["amount_total"], invoice["state"], invoice["status_in_payment"], invoice["partner_id"]))
         else:
-            cur.execute("UPDATE invoices SET name = ?, invoice_date = ?, amount_total = ?, state = ?, partner_id = ? WHERE id = ?", (invoice["name"], invoice["invoice_date"], invoice["amount_total"], invoice["state"], invoice["partner_id"], invoice["id"]))
+            cur.execute("UPDATE invoices SET name = ?, invoice_date = ?, amount_total = ?, state = ?, status_in_payment = ?, partner_id = ? WHERE id = ?", (invoice["name"], invoice["invoice_date"], invoice["amount_total"], invoice["state"], invoice["status_in_payment"], invoice["partner_id"], invoice["id"]))
     
     con.commit()
     con.close()
